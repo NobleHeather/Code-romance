@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Comptage des phrases modifiées</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="comptage.css" />
+    </head>
+    <body>
+        <main class="container">
+            <h1>Comptage des phrases modifiées</h1>
+
+            <p class="description">
+                Cet outil compare deux versions d’un texte pour déterminer
+                quelles phrases du texte original ont été modifiées. Une phrase
+                est considérée comme conservée si elle existe encore telle
+                quelle dans le texte corrigé, dans le même ordre, même si des
+                phrases ont été ajoutées entre les deux versions.
+            </p>
+
+            <p class="code-link">
+                Le code est accessible ici :
+                <a href="code.html" class="code-button">Voir le code</a>
+            </p>
+
+            <section class="inputs">
+                <label for="textA">Texte original</label>
+                <textarea
+                    id="textA"
+                    placeholder="Collez ici le texte original…"
+                ></textarea>
+
+                <label for="textB">Texte corrigé</label>
+                <textarea
+                    id="textB"
+                    placeholder="Collez ici le texte corrigé…"
+                ></textarea>
+            </section>
+
+            <button id="run">Lancer le calcul</button>
+
+            <section id="result" class="result hidden">
+                <!-- Résultat injecté par le script -->
+            </section>
+        </main>
+
+        <!-- JS -->
+        <script src="comptage.js"></script>
+    </body>
+</html>

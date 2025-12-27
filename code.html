@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Code</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="prism/prism.css" />
+        <link rel="stylesheet" href="comptage.css" />
+    </head>
+    <body>
+        <main class="code-container">
+            <section>
+                <h2>HTML</h2>
+                <pre><code class="language-html">
+<!-- colle ici ton comptage.html -->
+&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Comptage des phrases modifiées&lt;/title&gt;
+    &lt;link rel="stylesheet" href="comptage.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;main class="container"&gt;
+
+        &lt;h1&gt;Comptage des phrases modifiées&lt;/h1&gt;
+
+        &lt;p class="description"&gt;
+                Cet outil compare deux versions d’un texte pour déterminer
+                quelles phrases du texte original ont été modifiées. Une phrase
+                est considérée comme conservée si elle existe encore telle
+                quelle dans le texte corrigé, dans le même ordre, même si des
+                phrases ont été ajoutées entre les deux versions.
+        &lt;/p&gt;
+
+        &lt;p class="code-link"&gt;
+            Le code est accessible ici :
+            &lt;a href="code.html" class="code-button"&gt;Voir le code&lt;/a&gt;
+        &lt;/p&gt;
+
+        &lt;label for="textA"&gt;Texte original&lt;/label&gt;
+        &lt;textarea id="textA"&gt;&lt;/textarea&gt;
+
+        &lt;label for="textB"&gt;Texte corrigé&lt;/label&gt;
+        &lt;textarea id="textB"&gt;&lt;/textarea&gt;
+
+        &lt;button id="run"&gt;Lancer le calcul&lt;/button&gt;
+
+        &lt;section id="result" class="result hidden"&gt;&lt;/section&gt;
+
+    &lt;/main&gt;
+
+    &lt;script src="comptage.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+        </code></pre>
+            </section>
+
+            <section>
+                <h2>CSS</h2>
+                <pre><code class="language-css">
+<!-- colle ici style.css -->
+ /* =========================
+   Base
+   ========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #fafafa;
+    color: #222;
+}
+
+/* =========================
+   Layout
+   ========================= */
+
+.container {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem;
+}
+
+/* =========================
+   Text
+   ========================= */
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #444;
+    margin-bottom: 2rem;
+}
+
+/* =========================
+   Inputs
+   ========================= */
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+label {
+    font-weight: 600;
+    margin-top: 1.2rem;
+}
+
+textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 0.7rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    resize: vertical;
+
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #666;
+}
+
+/* =========================
+   Buttons
+   ========================= */
+
+button {
+    margin-top: 1.8rem;
+    padding: 0.6rem 1.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    background-color: #e6e6e6;
+    border: 1px solid #999;
+    border-radius: 3px;
+}
+
+button:hover {
+    background-color: #dcdcdc;
+}
+
+button:active {
+    background-color: #d0d0d0;
+}
+
+.code-link {
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.code-button {
+    margin-left: 0.5rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.85rem;
+    text-decoration: none;
+    border: 1px solid #999;
+    border-radius: 3px;
+    background-color: #eee;
+    color: #222;
+}
+
+.code-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* =========================
+   Result
+   ========================= */
+
+.result {
+    margin-top: 2rem;
+    padding: 1.2rem 1.4rem;
+    background-color: #f1f1f1;
+    border-left: 4px solid #555;
+    font-size: 0.95rem;
+}
+
+.hidden {
+    display: none;
+}
+
+        </code></pre>
+            </section>
+
+            <section>
+                <h2>JavaScript</h2>
+                <pre><code class="language-js">
+<!-- colle ici comptage.js -->
+ /* ============================================================
+   Comptage des phrases modifiées
+   ------------------------------------------------------------
+   Principe général :
+   - On extrait les phrases du texte original (A)
+   - On extrait les phrases du texte corrigé (B)
+   - Une phrase de A est conservée si elle existe encore telle
+     quelle dans B, dans le même ordre, même si B contient
+     des phrases supplémentaires
+   - Les phrases ajoutées dans B ne sont pas pénalisées
+   - Les phrases supprimées, modifiées ou déplacées sont
+     comptées comme retouchées
+   ============================================================ */
+
+/* ============================================================
+   CONFIGURATION
+   ============================================================ */
+
+/*
+ Liste d’abréviations courantes contenant un point,
+ à protéger pour éviter les faux découpages de phrases.
+ Tu peux en ajouter sans toucher au reste du code.
+*/
+const ABBREVIATIONS = ["m.", "mme.", "dr.", "pr.", "etc.", "vs."];
+
+/* ============================================================
+   NORMALISATION DU TEXTE
+   ============================================================ */
+
+/*
+ Objectif :
+ - éviter les faux positifs dus aux espaces, retours ligne,
+   espaces insécables, ponctuation répétée
+ - NE PAS interpréter le sens
+*/
+function normalizeText(text) {
+    return (
+        text
+            // Minuscules pour comparaison stricte
+            .toLowerCase()
+
+            // Espaces insécables → espaces normaux
+            .replace(/\u00A0/g, " ")
+
+            // Réduction des espaces multiples
+            .replace(/\s+/g, " ")
+
+            // Ponctuations multiples (!!!, ???, ...) → un seul point
+            .replace(/([.!?]){2,}/g, ".")
+
+            // Suppression des espaces autour des ponctuations
+            .replace(/\s*([.!?])\s*/g, "$1")
+
+            .trim()
+    );
+}
+
+/* ============================================================
+   PROTECTION DES ABRÉVIATIONS
+   ============================================================ */
+
+/*
+ On remplace temporairement le point des abréviations
+ pour qu’il ne soit pas pris comme fin de phrase.
+*/
+function protectAbbreviations(text) {
+    let protectedText = text;
+
+    ABBREVIATIONS.forEach((abbr) => {
+        const safe = abbr.replace(".", "<DOT>");
+        const regex = new RegExp(abbr.replace(".", "\\."), "g");
+        protectedText = protectedText.replace(regex, safe);
+    });
+
+    return protectedText;
+}
+
+/*
+ Restauration éventuelle (pas strictement nécessaire
+ pour le calcul, mais propre si on affiche les phrases)
+*/
+function restoreAbbreviations(text) {
+    return text.replace(/<DOT>/g, ".");
+}
+
+/* ============================================================
+   DÉCOUPAGE EN PHRASES
+   ============================================================ */
+
+/*
+ Règle :
+ - Une phrase = ce qu’il y a entre deux séparateurs . ! ?
+ - On ajoute artificiellement un "." au début du texte
+   pour simplifier le découpage de la première phrase
+*/
+function splitIntoSentences(text) {
+    // Normalisation + protection
+    let prepared = normalizeText(text);
+    prepared = protectAbbreviations(prepared);
+
+    // Ajout du point artificiel en début
+    prepared = "." + prepared;
+
+    // Découpage
+    const rawSentences = prepared.split(/[.!?]/);
+
+    // Nettoyage final
+    const sentences = rawSentences
+        .map((s) => restoreAbbreviations(s.trim()))
+        .filter((s) => s.length > 0);
+
+    return sentences;
+}
+
+/* ============================================================
+   COMPARAISON DES PHRASES (logique "dans l’ordre")
+   ============================================================ */
+
+/*
+ Principe :
+ - On parcourt les phrases de A
+ - Pour chacune, on cherche une phrase IDENTIQUE dans B
+   en avançant toujours dans B (pas de retour en arrière)
+ - Si trouvée → phrase conservée
+ - Sinon → phrase retouchée
+*/
+function countConservedSentences(sentencesA, sentencesB) {
+    let indexB = 0;
+    let conserved = 0;
+
+    for (let i = 0; i < sentencesA.length; i++) {
+        const sentenceA = sentencesA[i];
+
+        for (let j = indexB; j < sentencesB.length; j++) {
+            if (sentenceA === sentencesB[j]) {
+                conserved++;
+                indexB = j + 1;
+                break;
+            }
+        }
+    }
+
+    return conserved;
+}
+
+/* ============================================================
+   POINT D’ENTRÉE — ACTION AU CLIC
+   ============================================================ */
+
+document.getElementById("run").addEventListener("click", () => {
+    const textA = document.getElementById("textA").value;
+    const textB = document.getElementById("textB").value;
+
+    if (!textA.trim() || !textB.trim()) {
+        alert("Merci de renseigner les deux textes.");
+        return;
+    }
+
+    // Découpage
+    const sentencesA = splitIntoSentences(textA);
+    const sentencesB = splitIntoSentences(textB);
+
+    // Calcul
+    const total = sentencesA.length;
+    const conserved = countConservedSentences(sentencesA, sentencesB);
+    const modified = total - conserved;
+    const percentage = total === 0 ? 0 : Math.round((modified / total) * 100);
+
+    // Affichage
+    const resultDiv = document.getElementById("result");
+    resultDiv.classList.remove("hidden");
+
+    resultDiv.innerHTML = `
+        <strong>Résultat</strong><br><br>
+        Phrases dans le texte original : ${total}<br>
+        Phrases conservées : ${conserved}<br>
+        Phrases modifiées ou supprimées : ${modified}<br><br>
+        <strong>Taux de phrases retouchées : ${percentage} %</strong>
+    `;
+});
+
+        </code></pre>
+            </section>
+        </main>
+
+        <script src="prism/prism.js"></script>
+    </body>
+</html>
