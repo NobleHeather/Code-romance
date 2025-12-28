@@ -113,6 +113,25 @@ function splitIntoSentences(text) {
 }
 
 /* ============================================================
+   DÉCOUPAGE EN MOTS
+   ============================================================ */
+
+/*
+ Règle :
+ - un mot = suite de lettres ou chiffres
+ - ponctuation ignorée
+ - casse ignorée
+*/
+function splitIntoWords(text) {
+    const normalized = normalizeText(text);
+
+    return normalized
+        .replace(/[.!?]/g, " ") // on enlève les fins de phrases
+        .split(" ")
+        .filter((w) => w.length > 0);
+}
+
+/* ============================================================
    COMPARAISON DES PHRASES (logique "dans l’ordre")
    ============================================================ */
 
@@ -144,6 +163,29 @@ function countConservedSentences(sentencesA, sentencesB) {
 }
 
 /* ============================================================
+   COMPARAISON DES MOTS (LCS)
+   ============================================================ */
+
+function countConservedWords(wordsA, wordsB) {
+    const m = wordsA.length;
+    const n = wordsB.length;
+
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (wordsA[i - 1] === wordsB[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    return dp[m][n];
+}
+
+/* ============================================================
    POINT D’ENTRÉE — ACTION AU CLIC
    ============================================================ */
 
@@ -156,25 +198,46 @@ document.getElementById("run").addEventListener("click", () => {
         return;
     }
 
-    // Découpage
+    /* COMPTAGE DES PHRASES */
+
     const sentencesA = splitIntoSentences(textA);
     const sentencesB = splitIntoSentences(textB);
 
-    // Calcul
-    const total = sentencesA.length;
-    const conserved = countConservedSentences(sentencesA, sentencesB);
-    const modified = total - conserved;
-    const percentage = total === 0 ? 0 : Math.round((modified / total) * 100);
+    const totalSentences = sentencesA.length;
+    const conservedSentences = countConservedSentences(sentencesA, sentencesB);
+    const modifiedSentences = totalSentences - conservedSentences;
+    const sentencePercentage =
+        totalSentences === 0
+            ? 0
+            : Math.round((modifiedSentences / totalSentences) * 100);
 
-    // Affichage
+    /* COMPTAGE DES MOTS */
+
+    const wordsA = splitIntoWords(textA);
+    const wordsB = splitIntoWords(textB);
+
+    const totalWords = wordsA.length;
+    const conservedWords = countConservedWords(wordsA, wordsB);
+    const wordPercentage =
+        totalWords === 0 ? 0 : Math.round((conservedWords / totalWords) * 100);
+
+    /* AFFICHAGE DES RÉSULTATS */
+
     const resultDiv = document.getElementById("result");
     resultDiv.classList.remove("hidden");
 
     resultDiv.innerHTML = `
         <strong>Résultat</strong><br><br>
-        Phrases dans le texte original : ${total}<br>
-        Phrases conservées : ${conserved}<br>
-        Phrases modifiées ou supprimées : ${modified}<br><br>
-        <strong>Taux de phrases retouchées : ${percentage} %</strong>
+
+        <strong>Phrases</strong><br>
+        Phrases dans le texte original : ${totalSentences}<br>
+        Phrases conservées : ${conservedSentences}<br>
+        Phrases modifiées ou supprimées : ${modifiedSentences}<br>
+        <strong>Taux de phrases retouchées : ${sentencePercentage} %</strong><br><br>
+
+        <strong>Mots</strong><br>
+        Mots dans le texte original : ${totalWords}<br>
+        Mots conservés : ${conservedWords}<br>
+        <strong>Taux de mots conservés : ${wordPercentage} %</strong>
     `;
 });

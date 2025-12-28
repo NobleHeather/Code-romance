@@ -2,21 +2,26 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8" />
-        <title>Comptage des phrases modifiées</title>
+        <title>Suivi statistique des corrections</title>
 
         <!-- CSS -->
         <link rel="stylesheet" href="comptage.css" />
     </head>
     <body>
         <main class="container">
-            <h1>Comptage des phrases modifiées</h1>
+            <h1>Suivi statistique des corrections</h1>
 
-            <p class="description">
-                Cet outil compare deux versions d’un texte pour déterminer
-                quelles phrases du texte original ont été modifiées. Une phrase
-                est considérée comme conservée si elle existe encore telle
-                quelle dans le texte corrigé, dans le même ordre, même si des
-                phrases ont été ajoutées entre les deux versions.
+            <p>
+                Cet outil compare deux versions d’un même texte selon deux
+                critères complémentaires.
+                <br /><br />
+                Le <strong>taux de phrases retouchées</strong> mesure la part de
+                phrases du texte original qui ont été modifiées, déplacées ou
+                supprimées dans la version retravaillée. Les phrases ajoutées ne
+                sont pas prises en compte. <br /><br />
+                Le <strong>taux de mots conservés</strong> mesure la proportion
+                de mots du texte original qui se retrouvent encore dans la
+                version corrigée. Les ajouts ne sont pas comptés. <br /><br />
             </p>
 
             <p class="code-link">
